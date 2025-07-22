@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController? controller;
@@ -52,32 +53,30 @@ class CustomTextFormField extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       style: textStyle ??
-          const TextStyle(
-            fontSize: 14,
+           TextStyle(
+            fontSize: 14.sp,
             color: Colors.black,
             fontWeight: FontWeight.w500,
           ),
       decoration: InputDecoration(
-        fillColor: const Color(0xFFF3F3F3),
-        filled: true,
         hintText: hintText,
         hintStyle: hintStyle ??
-            const TextStyle(
-              fontSize: 12,
+             TextStyle(
+              fontSize: 14.sp,
               color: Color(0xFF676767),
               fontWeight: FontWeight.w500,
             ),
         border: border ??
             OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: const BorderSide(color: Color(0xFFCCCCCC)),
+              borderRadius: BorderRadius.circular(6.0.r),
+              borderSide: const BorderSide(color: Colors.black),
             ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(6.0.r),
           borderSide: const BorderSide(color: Colors.blue),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(6.0.r),
           borderSide: const BorderSide(color: Colors.red),
         ),
 

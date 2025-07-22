@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../theme/app_colors.dart';
 
@@ -20,8 +21,8 @@ class SignupLoginText extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: text1,
-        style: const TextStyle(
-          fontSize: 14,
+        style:  TextStyle(
+          fontSize: 14.sp,
           color: Colors.black54,
           fontWeight: FontWeight.w500,
         ),
@@ -29,7 +30,7 @@ class SignupLoginText extends StatelessWidget {
           TextSpan(
             text: text2,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.sp,
               color: AppColor.primaryColor,
               fontWeight: FontWeight.w500,
             ),

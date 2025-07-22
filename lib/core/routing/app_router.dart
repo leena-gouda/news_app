@@ -7,7 +7,7 @@ import '../../features/auth/login/ui/screens/login_screen.dart';
 import '../../features/auth/signup/ui/screens/sign_up_screen.dart';
 import '../../features/home/data/models/news_model.dart';
 import '../../features/home/ui/views/home_screen.dart';
-import '../../features/home/ui/views/widgets/news_destils.dart';
+import '../../features/home/ui/views/widgets/news_details.dart';
 import '../../features/onboarding/ui/views/onboarding_screen.dart';
 import '../../features/splash_screen/ui/views/splash_screen.dart';
 

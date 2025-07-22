@@ -35,10 +35,13 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  getNewsByCategory(String category) async {
+  int currentIndex = 0;
+
+  getNewsByCategory(String category,int index) async {
     emit(HomeLoading());
     try {
       final apiNews = await newsApiRepo.fetchNewsByCategory(category);
+      currentIndex = index;
       emit(HomeSuccess(apiNews));
     } catch (e) {
       emit(HomeError(e.toString()));

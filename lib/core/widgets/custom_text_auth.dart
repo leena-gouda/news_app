@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextAuth extends StatelessWidget {
   final String text;
@@ -8,7 +9,7 @@ class CustomTextAuth extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold,),
+      style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold,),
     );
   }
 }

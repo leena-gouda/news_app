@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_colors.dart';
 import '../../../data/repos/onboarding_data.dart';
 import '../../cubit/onboarding_cubit.dart';
 
@@ -24,10 +25,10 @@ class CustomBodyOnboarding extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: Image.asset(page.image,fit: BoxFit.cover,)),
-                SizedBox(height: 16),
-
+                //SizedBox(height: 16),
+                16.verticalSpace,
                 Padding(
-                  padding: const EdgeInsets.all(24.0),
+                  padding:  EdgeInsets.all(24.0.r),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -36,14 +37,15 @@ class CustomBodyOnboarding extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
                           color: Colors.black,
-                          fontSize: 24,
+                          fontSize: 24.sp,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      // SizedBox(height: 10),
+                      10.verticalSpace,
                       Text(
                         page.supTitle,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                           color: AppColor.textGray,
                         ),

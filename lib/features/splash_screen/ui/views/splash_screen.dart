@@ -2,6 +2,7 @@ import 'dart:async';
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_app/core/utils/extensions/navigation_extensions.dart';
 
 import '../../../../core/constants/app_assets.dart';
@@ -39,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen>
           opacity: opacity,
           duration: Duration(seconds: 3),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 50),
+            padding: EdgeInsets.symmetric(horizontal: 50.w),
             child: Image.asset(AppAssets.logoApp),
           ),
         ),

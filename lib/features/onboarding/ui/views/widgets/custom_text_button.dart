@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 
@@ -20,8 +21,8 @@ class CustomTextButton extends StatelessWidget {
     return TextButton(
       style: TextButton.styleFrom(
         backgroundColor: isBack == true ? null : AppColor.primaryColor,
-        minimumSize: const Size(85, 50),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        minimumSize:  Size(85.w, 50.h),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.r)),
       ),
       onPressed: onPressed,
       child: Text(
@@ -29,7 +30,7 @@ class CustomTextButton extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: color ?? Colors.white,
-          fontSize: 18,
+          fontSize: 18.sp,
         ),
       ),
     );

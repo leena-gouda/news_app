@@ -7,6 +7,7 @@ class AppAssets {
   static const String onboarding1 = '$pathImages/onboarding1.png';
   static const String onboarding2 = '$pathImages/onboarding2.png';
   static const String onboarding3 = '$pathImages/onboarding3.png';
+  static const String bbcIcon = '$pathImages/bbc.png';
 
 
 

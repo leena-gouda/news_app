@@ -12,7 +12,6 @@ class NewsApiRepo {
       EndpointConstants.everything,
       queryParameters: {
         "q": query,
-        "from": DateTime.now().subtract(Duration(days: 1)).toString().split(' ')[0],
         "sortBy": "publishedAt",
         "apiKey": apiKey,
       },

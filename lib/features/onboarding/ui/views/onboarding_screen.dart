@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_app/features/onboarding/ui/views/widgets/custom_body_onboarding.dart';
 import 'package:news_app/features/onboarding/ui/views/widgets/custom_bottom_onboarding.dart';
 
@@ -17,12 +18,14 @@ class OnboardingScreen extends StatelessWidget {
         body: Column(
           children: [
             Expanded(flex: 2, child: CustomBodyOnboarding()),
-            SizedBox(height: 60),
+            //SizedBox(height: 60),
+            60.verticalSpace,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding:const EdgeInsets.symmetric(horizontal: 24),
               child: CustomBottomOnboarding(),
             ),
-            SizedBox(height: 30),
+            //SizedBox(height: 30),
+            30.verticalSpace,
           ],
         ),
       ),

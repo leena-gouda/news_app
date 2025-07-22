@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../theme/app_colors.dart';
 
@@ -31,9 +32,9 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor ?? AppColor.primaryColor,
-        minimumSize: Size(double.infinity, height),
+        minimumSize: Size(double.infinity.w, height.r),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(borderRadius.r),
         ),
       ),
       onPressed: onPressed,
@@ -45,8 +46,8 @@ class CustomButton extends StatelessWidget {
       label: Text(
         text,
         style: textStyle ??
-        const TextStyle(
-        fontSize: 20,
+         TextStyle(
+        fontSize: 20.sp,
         fontWeight: FontWeight.w900,
         color: AppColor.textGray,
         ),
