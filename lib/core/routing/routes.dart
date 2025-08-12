@@ -5,6 +5,9 @@ class Routes {
   static const String signupsScreen = '/signup-screen';
   static const String homeScreen = '/home-screen';
   static const String newsDetailsScreen = '/news-details-screen';
+  static const String trendingScreen = '/trending-screen';
+  static const String bookMarkScreen = '/book-mark-screen';
+
 
 
 

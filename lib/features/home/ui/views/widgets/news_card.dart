@@ -22,7 +22,9 @@ class NewsCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8.r),
             child: CachedNetworkImage(
-                imageUrl: news.urlToImage!,
+              imageUrl: news.urlToImage ??
+                  "https://img.freepik.com/free-photo/woman-beach-with-her-baby-enjoying-sunset_52683-144131.jpg?size=626&ext=jpg",
+
               width: 96.w,
               height: 96.h,
               fit: BoxFit.cover,
@@ -38,14 +40,23 @@ class NewsCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Europe",
-                  style: TextStyle(
-                    color: AppColor.seeColor,
-                    fontSize: 14.sp,
-                    fontWeight:  FontWeight.w500,
-                  )
-                ),
+                if (news.source?.name != null)
+                  Text(
+                    news.source!.name!,
+                    style: TextStyle(
+                      color: AppColor.seeColor,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                // Text(
+                //   "Europe",
+                //   style: TextStyle(
+                //     color: AppColor.seeColor,
+                //     fontSize: 14.sp,
+                //     fontWeight:  FontWeight.w500,
+                //   )
+                // ),
                 Text(
                   news.title ?? "No title",
                   maxLines: 2,
@@ -55,7 +66,10 @@ class NewsCard extends StatelessWidget {
                   ).textTheme.titleMedium?.copyWith(fontSize: 16.sp),
                 ),
                 const SizedBox(height: 8),
-                NewsClockWidget(),
+                NewsClockWidget(
+                  sourceName: news.source?.name,
+                  publishedAt: news.publishedAt,
+                ),
               ]
             ),
           )

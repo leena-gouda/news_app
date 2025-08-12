@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +13,9 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   final NewsApiRepo newsApiRepo;
 
-  HomeCubit(this.newsApiRepo) : super(HomeInitial());
+  HomeCubit(this.newsApiRepo) : super(HomeInitial()){
+    loadBookmarks();
+  }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -25,10 +29,12 @@ class HomeCubit extends Cubit<HomeState> {
     "technology",
   ];
 
+  bool showCategoryView = false;
+
   getNews([String? query]) async {
     emit(HomeLoading());
     try {
-      final apiNews = await newsApiRepo.fetchNews(query ?? "sports");
+      final apiNews = await newsApiRepo.fetchNews(query ?? "business");
       emit(HomeSuccess(apiNews));
     } catch (e) {
       emit(HomeError(e.toString()));
@@ -36,6 +42,8 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   int currentIndex = 0;
+
+  String get selectedCategory => categories[currentIndex];
 
   getNewsByCategory(String category,int index) async {
     emit(HomeLoading());
@@ -47,6 +55,17 @@ class HomeCubit extends Cubit<HomeState> {
       emit(HomeError(e.toString()));
     }
   }
+
+  getTrendingNews() async {
+    emit(HomeLoading());
+    try {
+      final apiNews = await newsApiRepo.fetchTrendingNews();
+      emit(HomeSuccess(apiNews));
+    } catch (e) {
+      emit(HomeError(e.toString()));
+    }
+  }
+
 
   void signOut() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -96,5 +115,70 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       emit(HomeError('User not found'));
     }
+  }
+
+  void enableCategoryView(String category, int index) {
+    showCategoryView = true;
+    currentIndex = index;
+    getNewsByCategory(category, index);
+    emit(CategoryView('Showing news for $category'));
+  }
+  void disableCategoryView() {
+    showCategoryView = false;
+    emit(CategoryView('Showing all news'));
+    getNews();
+  }
+
+  final List<NewsModel> bookmarkedArticles = [];
+
+  void toggleBookmark(NewsModel news) {
+    if (bookmarkedArticles.contains(news)) {
+      emit(BookMarkRemove("Bookmark removed"));
+      bookmarkedArticles.remove(news);
+    } else {
+      emit(BookMarkAdd("Bookmark added"));
+      bookmarkedArticles.add(news);
+    }
+    emit(BookMarkToggle());
+  }
+
+  bool isBookmarked(NewsModel news) {
+    if(bookmarkedArticles.isEmpty) {
+      emit(BookMarkEmpty("No bookmarks found"));
+    }else{
+      emit(BookMarkLoaded());
+    }
+    return bookmarkedArticles.contains(news);
+  }
+
+  void removeBookmark(NewsModel news) {
+    bookmarkedArticles.remove(news);
+    emit(BookMarkRemove("Bookmark removed"));
+  }
+
+  List<String?> get allBookmarkedIds =>
+      bookmarkedArticles.map((article) => article.title).toList();
+
+
+  Future<void> saveBookmarks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = bookmarkedArticles.map((article) => jsonEncode(article.toJson())).toList();
+    await prefs.setStringList('bookmarkedArticles', saved);
+    emit(BookMarkSuccess(bookmarkedArticles));
+  }
+
+  Future<void> loadBookmarks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getStringList('bookmarkedArticles') ?? [];
+    bookmarkedArticles.clear();
+    for (var jsonStr in saved) {
+      final article = NewsModel.fromJson(jsonDecode(jsonStr));
+      bookmarkedArticles.add(article);
+    }
+    for (var jsonStr in saved) {
+      final decoded = jsonDecode(jsonStr);
+      print('Decoded type: ${decoded.runtimeType}');
+    }
+    emit(BookMarkLoaded());
   }
 }

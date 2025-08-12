@@ -21,3 +21,42 @@ final class HomeError extends HomeState {
 
   HomeError(this.message);
 }
+final class CategoryView extends HomeState {
+  final String message;
+
+  CategoryView(this.message);
+}
+final class BookMarkToggle extends HomeState {}
+
+final class BookMarkLoaded extends HomeState {}
+
+final class BookMarkError extends HomeState {
+  final String message;
+
+  BookMarkError(this.message);
+}
+final class BookMarkLoading extends HomeState {}
+
+final class BookMarkSuccess extends HomeState {
+  final List<NewsModel> bookmarks;
+
+  BookMarkSuccess(this.bookmarks);
+}
+final class BookMarkEmpty extends HomeState {
+  final String message;
+
+  BookMarkEmpty(this.message);
+}
+
+final class BookMarkAdd extends HomeState {
+  final String message;
+
+  BookMarkAdd(this.message);
+}
+
+final class BookMarkRemove extends HomeState {
+  final String message;
+
+  BookMarkRemove(this.message);
+}
+

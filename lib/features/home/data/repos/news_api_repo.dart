@@ -35,4 +35,28 @@ class NewsApiRepo {
         .map((e) => NewsModel.fromJson(e))
         .toList();
   }
+
+  Future<List<NewsModel>> fetchTrendingNews() async {
+    final response = await dio.get(
+      EndpointConstants.topHeadlines,
+      queryParameters: {
+        "country": "us",
+        "pageSize": 20,
+        "apiKey": apiKey,
+      },
+    );
+
+    final articles = response.data['articles'] as List;
+
+    // Optional: prioritize articles from top sources
+    final topSources = ["BBC News", "CNN", "The Verge", "Reuters"];
+    articles.sort((a, b) {
+      final aSource = topSources.contains(a['source']['name']) ? 1 : 0;
+      final bSource = topSources.contains(b['source']['name']) ? 1 : 0;
+      return bSource.compareTo(aSource);
+    });
+
+    return articles.map((e) => NewsModel.fromJson(e)).toList();
+  }
+
 }

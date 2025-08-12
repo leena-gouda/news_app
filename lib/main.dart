@@ -2,12 +2,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:news_app/features/home/ui/cubit/navigation_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/routes.dart';
 import 'core/utils/notification_service.dart';
+import 'features/home/data/repos/news_api_repo.dart';
+import 'features/home/ui/cubit/home_cubit.dart';
 import 'firebase_options.dart';
 
 // Api Key: 1a0ac09f5f074de4abe53a2af46bcac1
@@ -15,9 +19,11 @@ import 'firebase_options.dart';
 
 bool isLogin = false;
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print('📩 إشعار من الخلفية: ${message.notification?.title}');
+  print('📩 Notification from background ${message.notification?.title}');
 }
 
 void main() async {
@@ -67,22 +73,35 @@ class MyApp extends StatelessWidget {
         designSize: const Size(428, 926),
     minTextAdapt: true,
     splitScreenMode: true,
-    builder: (_ , child) => MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-            elevation: 0.0,
-          ),
-          useMaterial3: true,
-          fontFamily: GoogleFonts.poppins().fontFamily,
+    builder: (_ , child) => MultiBlocProvider(
+      providers: [
+        BlocProvider<HomeCubit>(
+          create: (context) => HomeCubit(NewsApiRepo()),
+
         ),
-        initialRoute: isLogin == true ? Routes.homeScreen : Routes.splashScreen,
-        onGenerateRoute: appRouter.generateRoute,
-      )
+        BlocProvider<NavigationCubit>(
+          create: (context) => NavigationCubit(),
+        ),
+        // Add more providers here if needed
+      ],
+      child: MaterialApp(
+          navigatorKey: navigatorKey,
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            scaffoldBackgroundColor: Colors.white,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              elevation: 0.0,
+            ),
+            useMaterial3: true,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+          initialRoute: isLogin == true ? Routes.homeScreen : Routes.splashScreen,
+          onGenerateRoute: appRouter.generateRoute,
+        ),
+    )
     );
 
   }

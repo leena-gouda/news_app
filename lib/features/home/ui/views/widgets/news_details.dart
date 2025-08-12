@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_app/core/theme/app_colors.dart';
+import 'package:news_app/features/home/ui/cubit/home_cubit.dart';
 
 import '../../../data/models/news_model.dart';
 import 'package:intl/intl.dart';
 
+import '../../../data/repos/logo_api.dart';
+
 class NewsDetailsScreen extends StatelessWidget {
   final NewsModel news;
+  final String? category;
 
-  const NewsDetailsScreen({super.key, required this.news});
+  const NewsDetailsScreen({super.key, required this.news, this.category});
 
   String formatDate(String? isoDate) {
     if (isoDate == null) return "";
@@ -49,18 +54,34 @@ class NewsDetailsScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 25.r),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
-                          backgroundImage: AssetImage("assets/images/bbc.png"), // أو NetworkImage إذا متوفرة
-                          radius: 25.r,
+                        // CircleAvatar(
+                        //   backgroundImage:  news.urlToImage != null
+                        //       ? NetworkImage(news.urlToImage!)
+                        //       : const AssetImage("assets/images/default_publisher.png") as ImageProvider,
+                        //   radius: 25.r,
+                        // ),
+                        Image.network(
+                          LogoHelper.getLogoUrl(news.source?.name),
+                          width: 20.w,
+                          height: 20.h,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              LogoHelper.defaultLogo,
+                              width: 20.w,
+                              height: 20.h,
+                            );
+                          },
                         ),
+
                         8.horizontalSpace,
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(news.source?.name ?? '',
+                            Text(news.source?.name ?? 'Unknown Publisher',
                                 style: TextStyle(color: AppColor.black,
                                     fontWeight: FontWeight.w600, fontSize: 16.sp)),
                             Text(
@@ -79,7 +100,7 @@ class NewsDetailsScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6.r),
                           ),
                           child:  Text(
-                            "Following",
+                            category ?? "General",
                             style: TextStyle(color: Colors.white, fontSize: 16.sp,fontWeight: FontWeight.w600),
                           ),
                         ),
@@ -106,20 +127,39 @@ class NewsDetailsScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Europe",
-                            style: TextStyle(
-                                color: AppColor.seeColor, fontSize: 14.sp, fontWeight: FontWeight.w400)),
-                        4.verticalSpace,
+                        // Text("Europe",
+                        //     style: TextStyle(
+                        //         color: AppColor.seeColor, fontSize: 14.sp, fontWeight: FontWeight.w400)),
+                        // 4.verticalSpace,
                         Text(
                           news.title ?? '',
                           style: TextStyle(color: AppColor.black,
                             fontSize: 24, fontWeight: FontWeight.w600,),
                         ),
                         8.verticalSpace,
+                        if (news.author != null)
+                          Text(
+                            "By ${news.author}",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColor.seeColor,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        8.verticalSpace,
                         Text(
                           news.description ?? '',
                           style: TextStyle(fontSize: 16.sp, color: AppColor.seeColor,fontWeight: FontWeight.w400),
                         ),
+                        12.verticalSpace,
+                        if (news.content != null)
+                          Text(
+                            news.content!,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              color: AppColor.black,
+                            ),
+                          ),
                       ],
                     ),
                   ],
@@ -152,9 +192,28 @@ class NewsDetailsScreen extends StatelessWidget {
                     Text("1K",
                         style: TextStyle(fontSize: 15.sp)),
                     const Spacer(),
-                    Icon(Icons.bookmark_outlined,
-                        size: 24.r,
-                        color: AppColor.primaryColor),
+                    BlocBuilder<HomeCubit, HomeState>(
+                      builder: (context, state) {
+                        final cubit = context.read<HomeCubit>();
+                        final isSaved = cubit.isBookmarked(news);
+
+                        return IconButton(
+                          onPressed: () {
+                            cubit.toggleBookmark(news);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(isSaved ? 'Removed from bookmarks' : 'Saved to bookmarks')),
+                            );
+                          },
+                          icon: Icon(
+                            isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                            color: Colors.blue,
+                            size: 28,
+                          ),
+                        );
+
+
+                      },
+                    )
                   ],
                 )
             )

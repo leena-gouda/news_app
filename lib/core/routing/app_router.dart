@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:news_app/core/routing/routes.dart';
+import 'package:news_app/features/home/ui/views/bookmark_screen.dart';
+import 'package:news_app/features/home/ui/views/trending_screen.dart';
 
 import '../../features/auth/login/ui/screens/login_screen.dart';
 
@@ -27,8 +29,14 @@ class AppRouter {
       case Routes.signupsScreen:
         return _createRoute(SignUpScreen());
       case Routes.newsDetailsScreen:
-        final news = arguments as NewsModel;
-        return _createRoute(NewsDetailsScreen(news: news));
+        final args = arguments as Map<String, dynamic>;
+        final news = args['news'] as NewsModel;
+        final category = args['category'] as String?;
+        return _createRoute(NewsDetailsScreen(news: news, category: category));
+      case Routes.trendingScreen:
+        return _createRoute(TrendingScreen());
+      case Routes.bookMarkScreen:
+        return _createRoute(BookmarkScreen());
 
       default:
         return MaterialPageRoute(

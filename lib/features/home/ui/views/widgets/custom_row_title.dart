@@ -6,7 +6,8 @@ import '../../../../../core/theme/app_colors.dart';
 
 class CustomRowTitle extends StatelessWidget {
   final String title;
-  const CustomRowTitle({super.key, required this.title});
+  final VoidCallback? onPressed;
+  const CustomRowTitle({super.key, required this.title,this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class CustomRowTitle extends StatelessWidget {
         ),
         const Spacer(),
         TextButton(
-          onPressed: () {},
+          onPressed:onPressed,
           child:  Text(
             'See All',
             style: TextStyle(
