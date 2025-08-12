@@ -76,6 +76,9 @@ class TrendingScreen extends StatelessWidget {
               height: 180.h,
               width: double.infinity,
               fit: BoxFit.cover,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.broken_image, color: Colors.grey),
+
             ),
           ),
           Padding(

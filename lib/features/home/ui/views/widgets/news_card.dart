@@ -28,10 +28,13 @@ class NewsCard extends StatelessWidget {
               width: 96.w,
               height: 96.h,
               fit: BoxFit.cover,
+              placeholder: (context, url) => CircularProgressIndicator(),
               errorWidget:
               (context,url,error) => CachedNetworkImage(
                   imageUrl: "https://img.freepik.com/free-photo/woman-beach-with-her-baby-enjoying-sunset_52683-144131.jpg?size=626&ext=jpg",
                 fit: BoxFit.cover,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.broken_image, color: Colors.grey),
               ),
             ),
           ),

@@ -36,7 +36,11 @@ class NewsClockWidget extends StatelessWidget {
                 return Icon(Icons.image_not_supported, size: 20.w);
               },
             );
-          }
+          },
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (frame == null) return CircularProgressIndicator();
+          return child;
+          },
         ),
         4.horizontalSpace,
         Flexible(child: Text(sourceName ?? "UnKnown")),

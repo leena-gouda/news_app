@@ -22,7 +22,6 @@ class AppRouter {
       case Routes.onboardingScreen:
         return _createRoute(OnboardingScreen());
       case Routes.homeScreen:
-
         return _createRoute(HomeScreen());
       case Routes.loginScreen:
         return _createRoute(LoginScreen());

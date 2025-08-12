@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_app/features/home/ui/cubit/navigation_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'app_bloc_observer.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/routes.dart';
 import 'core/utils/notification_service.dart';
@@ -32,6 +33,8 @@ void main() async {
   try {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await isLoggedIn();
+
+  Bloc.observer = AppBlocObserver();
 
   await NotificationService.init(); // دي اللي هنشرحها دلوقتي
 
@@ -76,8 +79,11 @@ class MyApp extends StatelessWidget {
     builder: (_ , child) => MultiBlocProvider(
       providers: [
         BlocProvider<HomeCubit>(
-          create: (context) => HomeCubit(NewsApiRepo()),
-
+          create: (context) {
+            final cubit = HomeCubit(NewsApiRepo());
+            cubit.init();
+            return cubit;
+          },
         ),
         BlocProvider<NavigationCubit>(
           create: (context) => NavigationCubit(),

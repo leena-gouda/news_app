@@ -73,7 +73,12 @@ class NewsDetailsScreen extends StatelessWidget {
                               LogoHelper.defaultLogo,
                               width: 20.w,
                               height: 20.h,
+                              errorBuilder: (context, url, error) => Icon(Icons.broken_image, color: Colors.grey),
                             );
+                          },
+                          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                            if (frame == null) return CircularProgressIndicator();
+                            return child;
                           },
                         ),
 
@@ -115,6 +120,11 @@ class NewsDetailsScreen extends StatelessWidget {
                         width: 380.w,
                         height: 248.h,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, url, error) => Icon(Icons.broken_image, color: Colors.grey,size: 50,),
+                        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                          if (frame == null) return CircularProgressIndicator();
+                          return child;
+                        },
                       )
                           : Container(
                         height: 248.h,

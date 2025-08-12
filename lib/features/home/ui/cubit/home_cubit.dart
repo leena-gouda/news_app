@@ -13,8 +13,11 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   final NewsApiRepo newsApiRepo;
 
-  HomeCubit(this.newsApiRepo) : super(HomeInitial()){
-    loadBookmarks();
+  HomeCubit(this.newsApiRepo) : super(HomeInitial());
+
+  Future<void> init() async {
+    await loadBookmarks();
+    getNews();
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -129,56 +132,84 @@ class HomeCubit extends Cubit<HomeState> {
     getNews();
   }
 
-  final List<NewsModel> bookmarkedArticles = [];
+  final List<NewsModel> _bookmarkedArticles = [];
 
-  void toggleBookmark(NewsModel news) {
-    if (bookmarkedArticles.contains(news)) {
-      emit(BookMarkRemove("Bookmark removed"));
-      bookmarkedArticles.remove(news);
-    } else {
-      emit(BookMarkAdd("Bookmark added"));
-      bookmarkedArticles.add(news);
-    }
-    emit(BookMarkToggle());
-  }
-
-  bool isBookmarked(NewsModel news) {
-    if(bookmarkedArticles.isEmpty) {
-      emit(BookMarkEmpty("No bookmarks found"));
-    }else{
-      emit(BookMarkLoaded());
-    }
-    return bookmarkedArticles.contains(news);
-  }
-
-  void removeBookmark(NewsModel news) {
-    bookmarkedArticles.remove(news);
-    emit(BookMarkRemove("Bookmark removed"));
-  }
-
-  List<String?> get allBookmarkedIds =>
-      bookmarkedArticles.map((article) => article.title).toList();
-
-
-  Future<void> saveBookmarks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final saved = bookmarkedArticles.map((article) => jsonEncode(article.toJson())).toList();
-    await prefs.setStringList('bookmarkedArticles', saved);
-    emit(BookMarkSuccess(bookmarkedArticles));
-  }
+  List<NewsModel> get bookmarkedArticles =>List.unmodifiable(_bookmarkedArticles);
 
   Future<void> loadBookmarks() async {
+    emit(BookMarkLoading());
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getStringList('bookmarkedArticles') ?? [];
+
+      _bookmarkedArticles
+        ..clear()
+        ..addAll(saved.map((jsonStr) => NewsModel.fromJson(jsonDecode(jsonStr))));
+
+      emit(BookMarkLoaded(List.unmodifiable(_bookmarkedArticles)));
+    } catch (e) {
+      emit(BookMarkError(e.toString()));
+    }
+  }
+  Future<void> addBookmark(NewsModel news) async {
+    if (!_bookmarkedArticles.any((a) => a.title == news.title)) {
+      _bookmarkedArticles.add(news);
+      await _saveBookmarks();
+    }
+    emit(BookMarkLoaded(List.unmodifiable(_bookmarkedArticles)));
+  }
+  Future<void> removeBookmark(NewsModel news) async {
+    try {
+      _bookmarkedArticles.removeWhere((a) => a.title == news.title);
+      await _saveBookmarks();
+      emit(BookMarkLoaded(List.unmodifiable(_bookmarkedArticles)));
+    } catch (e) {
+      emit(BookMarkError('Failed to remove bookmark'));
+      rethrow;
+    }
+  }
+  Future<void> toggleBookmark(NewsModel news) async {
+    final exists = _bookmarkedArticles.any((a) => a.title == news.title);
+    if (exists) {
+      _bookmarkedArticles.removeWhere((a) => a.title == news.title);
+    } else {
+      _bookmarkedArticles.add(news);
+    }
+    await _saveBookmarks();
+    emit(BookMarkLoaded(List.unmodifiable(_bookmarkedArticles)));
+  }
+  bool isBookmarked(NewsModel news) {
+    return _bookmarkedArticles.any((a) => a.title == news.title);
+  }
+  Future<void> _saveBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getStringList('bookmarkedArticles') ?? [];
-    bookmarkedArticles.clear();
-    for (var jsonStr in saved) {
-      final article = NewsModel.fromJson(jsonDecode(jsonStr));
-      bookmarkedArticles.add(article);
+    final saved = _bookmarkedArticles
+        .map((article) => jsonEncode(article.toJson()))
+        .toList();
+    await prefs.setStringList('bookmarkedArticles', saved);
+  }
+  Future<void> searchBookmarks(String query) async {
+    emit(BookMarkLoading());
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getStringList('bookmarkedArticles') ?? [];
+
+      final allBookmarks = saved.map((jsonStr) => NewsModel.fromJson(jsonDecode(jsonStr))).toList();
+
+      final filtered = allBookmarks.where((article) {
+        final titleMatch = article.title?.toLowerCase().contains(query.toLowerCase()) ?? false;
+        final descMatch = article.description?.toLowerCase().contains(query.toLowerCase()) ?? false;
+        final sourceMatch = article.source?.name?.toLowerCase().contains(query.toLowerCase()) ?? false;
+        return titleMatch || descMatch || sourceMatch;
+      }).toList();
+
+      _bookmarkedArticles
+        ..clear()
+        ..addAll(filtered);
+
+      emit(BookMarkLoaded(List.unmodifiable(_bookmarkedArticles)));
+    } catch (e) {
+      emit(BookMarkError('Failed to search bookmarks'));
     }
-    for (var jsonStr in saved) {
-      final decoded = jsonDecode(jsonStr);
-      print('Decoded type: ${decoded.runtimeType}');
-    }
-    emit(BookMarkLoaded());
   }
 }

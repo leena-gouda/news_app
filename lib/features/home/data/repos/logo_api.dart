@@ -11,3 +11,4 @@ class LogoHelper {
   }
 }
 //return "https://www.google.com/s2/favicons?domain=$domain";
+//return "https://logo.clearbit.com/example.com";
